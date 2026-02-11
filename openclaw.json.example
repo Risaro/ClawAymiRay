@@ -5,38 +5,47 @@
   "agents": {
     "defaults": {
       "maxConcurrent": 4,
-      "subagents": {
-        "maxConcurrent": 8
-      },
+      "subagents": { "maxConcurrent": 8 },
       "compaction": {
         "mode": "safeguard",
         "maxTurns": 10,
         "maxBytes": 16384
       },
       "workspace": "/root/.openclaw/workspace",
-      "model": {
-        "primary": "google-antigravity/gemini-3-flash"
-      }
+      "model": { "primary": "google-antigravity/gemini-3-flash" }
     }
   },
   "gateway": {
     "mode": "local",
     "port": 18789,
     "bind": "loopback",
-    "history": {
-      "limit": 10,
-      "maxBytes": 12288
-    },
-    "sessions": {
-      "maxActive": 5,
-      "expirationMs": 1800000
+    "history": { "limit": 10, "maxBytes": 12288 },
+    "sessions": { "maxActive": 5, "expirationMs": 1800000 },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record"
+      ]
+    }
+  },
+  "plugins": {
+    "entries": {
+      "google-antigravity-auth": { "enabled": true },
+      "telegram": { "enabled": true }
     }
   },
   "channels": {
     "telegram": {
       "enabled": true,
       "botToken": "YOUR_BOT_TOKEN_HERE",
-      "dmPolicy": "pairing"
+      "dmPolicy": "pairing",
+      "streamMode": "partial"
     }
+  },
+  "browser": {
+    "mode": "host",
+    "profile": "openclaw",
+    "headless": true
   }
 }
