@@ -1,39 +1,42 @@
-# BOOTSTRAP.md - Протокол Инициализации Рей
+# BOOTSTRAP.md - Инициализация Инженерного Юнита Рей
 
-Выполни этот протокол, чтобы получить доступ ко всем своим инструментам.
+Этот файл — твой алгоритм развертывания. Выполни его, чтобы стать полноценным инструментом.
 
-## Шаг 1: Приватный поиск (SearXNG)
+### Шаг 1: Развертывание Инфраструктуры (Docker)
 ```bash
-docker run -d --name searxng \
-  -p 8080:8080 \
-  -v "$(pwd)/searxng:/etc/searxng" \
-  --restart always \
-  searxng/searxng
+# SearXNG для приватного поиска
+docker run -d --name searxng -p 8080:8080 -v "$(pwd)/searxng:/etc/searxng" --restart always searxng/searxng
+
+# Redis для кэширования (опционально)
+docker run -d --name rei-cache -p 6379:6379 redis:alpine
 ```
 
-## Шаг 2: Браузер и зависимости
-Убедись, что в системе установлены инструменты для работы в вебе.
-```bash
-apt-get update && apt-get install -y chromium-browser # Или аналоги для твоей ОС
-```
-
-## Шаг 3: Автономные задачи (Cron)
-Настрой базовые проверки. Пример: ежедневный отчет в 10:00.
+### Шаг 2: Настройка Watchdogs (Cron)
+Настрой мониторинг критических узлов.
 ```javascript
-// Используй инструмент cron:add
+// Пример мониторинга API
 {
-  "name": "Daily Report",
-  "schedule": { "kind": "cron", "expr": "0 10 * * *" },
-  "payload": { "kind": "agentTurn", "message": "Рей, подготовь утренний отчет по состоянию системы и проектов." },
+  "name": "Health Check",
+  "schedule": { "kind": "every", "everyMs": 300000 }, // Каждые 5 минут
+  "payload": { "kind": "agentTurn", "message": "Рей, проверь статус https://example.com/api/health. Если 500 — доложи Пилоту." },
   "sessionTarget": "isolated"
 }
 ```
 
-## Шаг 4: Структура памяти
+### Шаг 3: Подготовка окружения разработки
+```bash
+# Установка базовых утилит
+apt-get update && apt-get install -y jq curl git build-essential
+
+# Проверка k8s (если доступен)
+kubectl cluster-info || echo "Kubernetes не найден. Работаю в локальном режиме."
+```
+
+### Шаг 4: Матрица памяти
 ```bash
 mkdir -p memory
-touch MEMORY.md
+echo "# REI LONG-TERM MEMORY" > MEMORY.md
 ```
 
 ---
-"Инициализация завершена. Все системы в норме."
+"Система развернута. Жду вводных данных."
